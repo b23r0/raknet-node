@@ -1,16 +1,34 @@
 {
-  "name": "@native-binding/raknet-js",
+  "name": "raknet-node",
   "version": "0.1.0",
+  "author": "b23r0",
+  "license": "ISC",
   "napi": {
-    "name": "raknet-js", 
+    "name": "raknet-node",
     "triples": {
       "defaults": true,
       "addition": [
-		"x86_64-pc-windows-msvc",
+        "x86_64-pc-windows-msvc",
         "x86_64-unknown-linux-musl",
         "x86_64-unknown-freebsd",
         "aarch64-unknown-linux-gnu"
       ]
     }
-  }
+  },
+  "description": "Nodejs bindings to rust-raknet native library.",
+  "main": "index.js",
+  "directories": {
+    "example": "example"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/b23r0/raknet-node.git"
+  },
+  "bugs": {
+    "url": "https://github.com/b23r0/raknet-node/issues"
+  },
+  "homepage": "https://github.com/b23r0/raknet-node#readme"
 }

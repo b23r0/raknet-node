@@ -1,10 +1,10 @@
-# raknet-js
+# raknet-node
 Nodejs bindings to rust-raknet native library.
 
 # Install
 
 ```
-npm install raknet-js
+npm install raknet-node
 ```
 
 Prebuilds are provided for 64-bit Windows 10, Linux and FreeBSD. If a prebuild does not work, please create an issue.
@@ -26,7 +26,7 @@ All methods use asynchronous wrappers.
 ## Example
 
 ```js
-const raknet = require('./raknet-js.node')
+const raknet = require('./raknet-node.node')
 const assert = require('assert');
 
 async function main(){
@@ -58,4 +58,4 @@ main()
 
 # Lisence
 
-MIT - https://github.com/b23r0/raknet-js/blob/main/LICENSE
+MIT - https://github.com/b23r0/raknet-node/blob/main/LICENSE

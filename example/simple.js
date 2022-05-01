@@ -1,4 +1,4 @@
-const raknet = require('./raknet-js.node')
+const raknet = require('./raknet-node.node')
 const assert = require('assert');
 
 async function main(){

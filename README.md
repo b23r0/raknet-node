@@ -1,14 +1,18 @@
 # raknet-node
+[![Build Status](https://img.shields.io/github/workflow/status/b23r0/raknet-node/Rust)](https://github.com/b23r0/raknet-node/actions/workflows/rust.yml)
+[![NPM version](https://img.shields.io/npm/v/raknet-node.svg)](http://npmjs.com/package/raknet-node)
+[![ChatOnDiscord](https://img.shields.io/badge/chat-on%20discord-blue)](https://discord.gg/ZKtYMvDFN4)
+
 Nodejs bindings to rust-raknet native library.
 
 # Install
 
 ## Dependencies
 
-The installation depends on `cargo` and `napi` tools, you can install it with the following command
+The installation depends on `cargo` and `napi` compile tools, you can install it with the following command
 
 ```sh
-npm uninstall @napi-rs/cli -g
+npm install @napi-rs/cli -g
 # linux
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 # Windows download from https://win.rustup.rs/x86_64

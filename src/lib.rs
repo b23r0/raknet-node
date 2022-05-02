@@ -70,6 +70,21 @@ impl RaknetClient{
 
         Ok(buf.into())
     }
+
+    #[napi]
+    pub async fn close(&mut self) -> Result<()> {
+        Ok(self.client.close().await.unwrap())
+    }
+
+    #[napi]
+    pub async fn peer_addr(&mut self) -> Result<String> {
+        Ok(self.client.peer_addr().unwrap().to_string())
+    }
+
+    #[napi]
+    pub async fn local_addr(&mut self) -> Result<String> {
+        Ok(self.client.local_addr().unwrap().to_string())
+    }
 }
 
 #[napi]
@@ -108,5 +123,10 @@ impl RaknetServer {
         Ok(RaknetClient{
             client : client
         })
+    }
+
+    #[napi]
+    pub async fn local_addr(&mut self) -> Result<String> {
+        Ok(self.server.local_addr().unwrap().to_string())
     }
 }

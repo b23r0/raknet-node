@@ -3,11 +3,24 @@ Nodejs bindings to rust-raknet native library.
 
 # Install
 
+## Dependencies
+
+The installation depends on `cargo` and `napi` tools, you can install it with the following command
+
+```sh
+npm uninstall @napi-rs/cli -g
+# linux
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+# Windows download from https://win.rustup.rs/x86_64
+```
+
+Install raknet-node using npm
+
 ```
 npm install raknet-node
 ```
 
-Prebuilds are provided for 64-bit Windows 10, Linux and FreeBSD. If a prebuild does not work, please create an issue.
+Prebuilds are provided for 64-bit Windows 10, OSX, Linux and FreeBSD. If a prebuild does not work, please create an issue.
 
 # Build
 
@@ -26,7 +39,7 @@ All methods use asynchronous wrappers.
 ## Example
 
 ```js
-const raknet = require('./raknet-node.node')
+const raknet = require('raknet-node')
 const assert = require('assert');
 
 async function main(){
@@ -47,6 +60,9 @@ async function main(){
 	buf2 = await client2.recv()
 
 	assert(buf1.compare(buf2) == 0)
+
+	await client1.close()
+	await client2.close()
 
 	return "finished"
 }

@@ -1,6 +1,6 @@
 {
   "name": "raknet-node",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "author": "b23r0",
   "license": "ISC",
   "napi": {
@@ -11,8 +11,7 @@
         "x86_64-pc-windows-msvc",
 		"x86_64-apple-darwin",
         "x86_64-unknown-linux-musl",
-        "x86_64-unknown-freebsd",
-        "aarch64-unknown-linux-gnu"
+        "x86_64-unknown-freebsd"
       ]
     }
   },
@@ -22,8 +21,6 @@
     "example": "example"
   },
   "scripts": {
-    "install": "napi build --release",
-	"checkEnv": "node buildChecks.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -33,5 +30,14 @@
   "bugs": {
     "url": "https://github.com/b23r0/raknet-node/issues"
   },
-  "homepage": "https://github.com/b23r0/raknet-node#readme"
+  "homepage": "https://github.com/b23r0/raknet-node#readme",
+  
+  "files" : [
+	"raknet-node-win.node" , 
+	"raknet-node-linux.node" , 
+	"index.js" , 
+	"package.json" , 
+	"README.md" , 
+	"LICENSE"
+  ]
 }

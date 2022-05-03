@@ -72,11 +72,6 @@ impl RaknetClient{
     }
 
     #[napi]
-    pub async fn close(&mut self) -> Result<()> {
-        Ok(self.client.close().await.unwrap())
-    }
-
-    #[napi]
     pub async fn peer_addr(&mut self) -> Result<String> {
         Ok(self.client.peer_addr().unwrap().to_string())
     }

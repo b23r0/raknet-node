@@ -7,8 +7,6 @@ Nodejs bindings to rust-raknet native library.
 
 # Install
 
-## Dependencies
-
 ```
 npm install raknet-node
 ```

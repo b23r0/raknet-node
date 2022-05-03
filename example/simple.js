@@ -19,10 +19,7 @@ async function main(){
 	buf2 = await client2.recv()
 
 	assert(buf1.compare(buf2) == 0)
-
-	await client1.close()
-	await client2.close()
-
+	
 	return "finished"
 }
 

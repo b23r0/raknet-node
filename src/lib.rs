@@ -3,6 +3,7 @@ use std::net::SocketAddr;
 use rust_raknet::*;
 use napi_derive::*;
 use napi::bindgen_prelude::*;
+use napi::threadsafe_function::{ErrorStrategy, ThreadsafeFunction , ThreadsafeFunctionCallMode};
 /// module registration is done by the runtime, no need to explicitly do it now.
 #[napi]
 pub struct RaknetServer {
@@ -95,13 +96,37 @@ impl RaknetServer {
                   ));
             }
         };
-        let mut server = RaknetListener::bind(address).await.unwrap();
+        let mut server = RaknetListener::bind(&address).await.unwrap();
 
         server.listen().await;
 
         Ok(RaknetServer{
             server : server
         })
+    }
+
+    #[napi]
+    pub fn listen(address : String  , callback: JsFunction) {
+        let tsfn: ThreadsafeFunction<RaknetClient, ErrorStrategy::CalleeHandled> = callback.create_threadsafe_function(0, |ctx| {
+            Ok(vec![ctx.value])
+        }).unwrap();
+
+        std::thread::spawn(move || {
+            let rt = tokio::runtime::Builder::new_current_thread().enable_all().build().unwrap();
+            rt.block_on(async move {
+                loop{
+                    let mut server = RaknetListener::bind(&address.parse().unwrap()).await.unwrap();
+                    server.listen().await;
+                    let client = server.accept().await.unwrap();
+                    tsfn.call(
+                        Ok(RaknetClient{
+                            client : client
+                        }) , 
+                        ThreadsafeFunctionCallMode::Blocking
+                    );
+                }
+            });
+        });
     }
 
     #[napi]

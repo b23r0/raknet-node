@@ -10,7 +10,8 @@ crate-type = ["cdylib"]
 napi = {version="2", features=["async"]}
 napi-derive = "2"
 tokio = {version = "1.17.0", features = ["full"]}
-rust-raknet = "0.6.0"
+rust-raknet = "0.7.0"
+futures = "0.3.21"
 
 [build-dependencies]
 napi-build = "1"

@@ -3,8 +3,7 @@ use std::net::SocketAddr;
 use rust_raknet::*;
 use napi_derive::*;
 use napi::bindgen_prelude::*;
-use napi::threadsafe_function::{ErrorStrategy, ThreadsafeFunction , ThreadsafeFunctionCallMode};
-/// module registration is done by the runtime, no need to explicitly do it now.
+
 #[napi]
 pub struct RaknetServer {
     server : RaknetListener
@@ -28,7 +27,15 @@ impl RaknetClient{
                   ));
             }
         };
-        let client = match RaknetSocket::connect(&address).await{
+        let client = match match tokio::time::timeout(std::time::Duration::from_secs(10) , RaknetSocket::connect(&address)).await{
+            Ok(p) => p,
+            Err(e) => {
+                return Err(Error::new(
+                    Status::GenericFailure,
+                    format!("{:?}", e),
+                  ));
+            }
+        }{
             Ok(p) => p,
             Err(e) => {
                 return Err(Error::new(
@@ -73,12 +80,12 @@ impl RaknetClient{
     }
 
     #[napi]
-    pub async fn peer_addr(&mut self) -> Result<String> {
+    pub async fn peeraddr(&mut self) -> Result<String> {
         Ok(self.client.peer_addr().unwrap().to_string())
     }
 
     #[napi]
-    pub async fn local_addr(&mut self) -> Result<String> {
+    pub async fn localaddr(&mut self) -> Result<String> {
         Ok(self.client.local_addr().unwrap().to_string())
     }
 }
@@ -106,30 +113,6 @@ impl RaknetServer {
     }
 
     #[napi]
-    pub fn listen(address : String  , callback: JsFunction) {
-        let tsfn: ThreadsafeFunction<RaknetClient, ErrorStrategy::CalleeHandled> = callback.create_threadsafe_function(0, |ctx| {
-            Ok(vec![ctx.value])
-        }).unwrap();
-
-        std::thread::spawn(move || {
-            let rt = tokio::runtime::Builder::new_current_thread().enable_all().build().unwrap();
-            rt.block_on(async move {
-                loop{
-                    let mut server = RaknetListener::bind(&address.parse().unwrap()).await.unwrap();
-                    server.listen().await;
-                    let client = server.accept().await.unwrap();
-                    tsfn.call(
-                        Ok(RaknetClient{
-                            client : client
-                        }) , 
-                        ThreadsafeFunctionCallMode::Blocking
-                    );
-                }
-            });
-        });
-    }
-
-    #[napi]
     pub async fn accept(&mut self) -> Result<RaknetClient> {
         let client = match self.server.accept().await{
             Ok(p) => p,
@@ -146,7 +129,7 @@ impl RaknetServer {
     }
 
     #[napi]
-    pub async fn local_addr(&mut self) -> Result<String> {
+    pub async fn localaddr(&mut self) -> Result<String> {
         Ok(self.server.local_addr().unwrap().to_string())
     }
 }

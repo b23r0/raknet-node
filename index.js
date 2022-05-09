@@ -19,7 +19,7 @@ try{
 
 function listen(address , cb) {
 
-	raknet.RaknetServer.bind(address).then((server) => {
+	RaknetServer.bind(address).then((server) => {
 		const doSomething = async () => {
 			for (;;){
 				cb(await server.accept())
@@ -34,11 +34,13 @@ function recvcb(client , cb) {
 		if (cb(buf)){
 			recvcb(client , cb)
 		}
+	}).catch((e) => {
+		cb(null)
 	})
 }
 
 function connectcb(address , cb){
-	raknet.RaknetClient.connect(address).then((client) =>{
+	RaknetClient.connect(address).then((client) =>{
 		cb(client)
 	})
 }
@@ -50,20 +52,18 @@ class Client extends EventEmitter {
     super()
     connectcb(hostname + ":" + port, (client) => {
 		this.client = client
-		this.startListening()
-	})
-
-	address = this.client.peeraddr()
+		var address = this.client.peeraddr()
 	
-	this.emit('connect', { address })
-	recvcb(this.client , (buf) => {
-		if (buf == null){
-			this.emit('disconnect', { address })
-			return false
-		}
-		
-		this.emit('encapsulated', { buffer: buf, address })
-		return true
+		this.emit('connect', { address })
+		recvcb(this.client , (buf) => {
+			if (buf == null){
+				this.emit('disconnect', { address })
+				return false
+			}
+			
+			this.emit('encapsulated', { buffer: buf, address })
+			return true
+		})
 	})
 
   }
@@ -77,7 +77,7 @@ class Server extends EventEmitter {
   constructor (hostname, port) {
     super()
     listen(hostname + ":" + port, (client) => {
-		address = client.peeraddr()
+		var address = client.peeraddr()
 		this.emit('openConnection', client)
 		recvcb(client , (buf) => {
 			if (buf == null){

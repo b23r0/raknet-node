@@ -80,13 +80,33 @@ impl RaknetClient{
     }
 
     #[napi]
-    pub async fn peeraddr(&mut self) -> Result<String> {
+    pub fn peeraddr(&mut self) -> Result<String> {
         Ok(self.client.peer_addr().unwrap().to_string())
     }
 
     #[napi]
-    pub async fn localaddr(&mut self) -> Result<String> {
+    pub fn localaddr(&mut self) -> Result<String> {
         Ok(self.client.local_addr().unwrap().to_string())
+    }
+
+    #[napi]
+    pub async fn close(&mut self) -> Result<()> {
+        self.client.close().await.unwrap();
+        Ok(())
+    }
+
+    #[napi]
+    pub async fn ping(address : String) -> Result<String> {
+        let (_ , motd) = match RaknetSocket::ping(&address.parse().unwrap()).await{
+            Ok(p) => p,
+            Err(e) => {
+                return Err(Error::new(
+                    Status::GenericFailure,
+                    format!("{:?}", e),
+                  ));
+            }
+        };
+        Ok(motd)
     }
 }
 

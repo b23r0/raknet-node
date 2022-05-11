@@ -21,13 +21,31 @@ napi build --release
 
 # Usage
 
-## class RaknetClient, RaknetServer
+## Compatible node-raknet-native
 
-The RaknetClient and RaknetServer classes are JS wrappers for the internal RaknetSocket and RaknetListener classes implemented in Rust in src/.
+raknet-node provides the same set of interfaces as node-raknet-native, which you can use in a similar way. But they still have some differences. For example we have to require the first byte of the packet to be 0xfe.
 
-All methods use asynchronous wrappers.
+```js
+const { Client, Server, PacketPriority, PacketReliability } = require('./index')
+// The third paramater is for game type, you can specify 'minecraft' or leave it blank for generic RakNet
+const client = new Client('127.0.0.1', 19130)
+// hostname, port, serverOptions
+const server = new Server('0.0.0.0', 19130)
+server.listen()
+client.connect()
+client.on('encapsulated', (buffer) => {
+  console.assert(buffer.cmp(Buffer.from([0xfe ,1, 2, 3])))
+})
 
-## Example
+server.on('openConnection', (client) => {
+  client.send(Buffer.from([0xfe ,1, 2, 3]), PacketPriority.HIGH_PRIORITY, PacketReliability.UNRELIABLE, 0)
+})
+```
+
+## Asynchronous usage
+
+The RaknetClient and RaknetServer classes are JS wrappers for the internal RaknetSocket and RaknetListener classes implemented in Rust in src/. All methods use asynchronous wrappers.
+
 
 ```js
 const raknet = require('raknet-node')

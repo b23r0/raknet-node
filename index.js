@@ -5,7 +5,7 @@ try{
 
   switch (process.platform) {
     case "win32":
-      var { RaknetClient, RaknetServer } = require('./raknet-node-win.node')
+      var { RaknetClient, RaknetServer , enablelog } = require('./raknet-node-win.node')
       break;
     case "linux":
       var { RaknetClient, RaknetServer } = require('./raknet-node-linux.node')
@@ -20,16 +20,19 @@ try{
 	process.exit(1)
 }
 
-function listen(address , cb) {
+function listen(server , cb) {
 
-	RaknetServer.bind(address).then((server) => {
-		const doSomething = async () => {
-			for (;;){
+	const doSomething = async () => {
+		for (;;){
+			try{
 				cb(await server.accept())
+			} catch{
+				break
 			}
+			
 		}
-		doSomething().then(null)
-	})
+	}
+	doSomething().then(null)
 }
 
 function recvcb(client , cb) {
@@ -104,25 +107,42 @@ function ServerClient (server, address, client) {
 class Server extends EventEmitter {
   constructor (hostname, port) {
     super()
+	this.server = null
     this.listen = () => {
-		listen(hostname + ":" + port, (client) => {
-			var address = hostname + ":" + port
-			const new_client = new ServerClient(this, client.peeraddr() , client)
-			this.emit('openConnection', new_client)
-			recvcb(client , (buf) => {
-				if (buf == null){
-					this.emit('closeConnection', { address })
-					return false
-				} else {
-					this.emit('encapsulated', { buffer: buf, address : client.peeraddr()})
-					return true
-				}
+		
+		this.server = RaknetServer.bind(hostname + ":" + port).then((server) => {
+			this.server = server
+			listen(server, (client) => {
+				var address = client.peeraddr()
+				const new_client = new ServerClient(this, client.peeraddr() , client)
+				this.emit('openConnection', new_client)
+				recvcb(client , (buf) => {
+					if (buf == null){
+						this.emit('closeConnection', { address })
+						return false
+					} else {
+						this.emit('encapsulated', { buffer: buf, address : client.peeraddr()})
+						return true
+					}
+				})
 			})
 		})
 	}
   }
   close() {
+	if (this.server != null)
+	this.server.close()
   }
+  
+  setOfflineMessage (message) {
+    if (message instanceof Buffer) message = message.toString()
+	if (this.server != null)
+    this.server.setmotd(message)
+  }
+  
+  kick (clientGuid, silent) {
+  }
+
 }
 
-module.exports = { RaknetClient, RaknetServer, Server, Client , MessageID, PacketPriority, PacketReliability }
+module.exports = { RaknetClient, RaknetServer, Server, Client , MessageID, PacketPriority, PacketReliability}

@@ -15,6 +15,11 @@ pub struct RaknetClient {
 }
 
 #[napi]
+pub fn enablelog(){
+    enable_raknet_log(255);
+}
+
+#[napi]
 impl RaknetClient{
     #[napi]
     pub async fn connect(address : String ) -> Result<RaknetClient> {
@@ -151,5 +156,15 @@ impl RaknetServer {
     #[napi]
     pub async fn localaddr(&mut self) -> Result<String> {
         Ok(self.server.local_addr().unwrap().to_string())
+    }
+
+    #[napi]
+    pub fn close(&mut self) -> Result<()> {
+        Ok(self.server.close().unwrap())
+    }
+
+    #[napi]
+    pub fn setmotd(&mut self , motd : String){
+        self.server.set_full_motd(motd).unwrap();
     }
 }

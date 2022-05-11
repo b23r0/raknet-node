@@ -36,6 +36,7 @@
 	"raknet-node-win.node" , 
 	"raknet-node-linux.node" , 
 	"index.js" , 
+	"constants.js",
 	"package.json" , 
 	"README.md" , 
 	"LICENSE"

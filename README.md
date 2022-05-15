@@ -26,7 +26,7 @@ napi build --release
 raknet-node provides the same set of interfaces as node-raknet-native, which you can use in a similar way. But they still have some differences. For example we have to require the first byte of the packet to be 0xfe.
 
 ```js
-const { Client, Server, PacketPriority, PacketReliability } = require('./index')
+const { Client, Server, PacketPriority, PacketReliability } = require('raknet-node')
 // The third paramater is for game type, you can specify 'minecraft' or leave it blank for generic RakNet
 const client = new Client('127.0.0.1', 19130)
 // hostname, port, serverOptions

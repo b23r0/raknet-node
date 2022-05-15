@@ -9,7 +9,7 @@
       "defaults": true,
       "addition": [
         "x86_64-pc-windows-msvc",
-		"x86_64-apple-darwin",
+        "x86_64-apple-darwin",
         "x86_64-unknown-linux-musl",
         "x86_64-unknown-freebsd"
       ]
@@ -31,14 +31,22 @@
     "url": "https://github.com/b23r0/raknet-node/issues"
   },
   "homepage": "https://github.com/b23r0/raknet-node#readme",
-  "keywords":["raknet", "bindings" , "udp" , "networking"],
-  "files" : [
-	"raknet-node-win.node" , 
-	"raknet-node-linux.node" , 
-	"index.js" , 
-	"constants.js",
-	"package.json" , 
-	"README.md" , 
-	"LICENSE"
-  ]
+  "keywords": [
+    "raknet",
+    "bindings",
+    "udp",
+    "networking"
+  ],
+  "files": [
+    "raknet-node-win.node",
+    "raknet-node-linux.node",
+    "index.js",
+    "constants.js",
+    "package.json",
+    "README.md",
+    "LICENSE"
+  ],
+  "dependencies": {
+    "sha1": "^1.1.1"
+  }
 }

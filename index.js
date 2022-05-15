@@ -1,5 +1,6 @@
 
 const { MessageID, PacketReliability, PacketPriority } = require('./constants.js')
+var sha1 = require('sha1');
 
 try{
 
@@ -96,8 +97,12 @@ function ServerClient (server, address, client) {
   const [hostname, port] = address.split(':')
   this.address = address
   this.client = client
+  this.server = server
   this.send = (...args) => this.client.send(...args)
-  this.close = (silent) => this.client.close()
+  this.close = () => {
+	this.server.kick(sha1(this.address))
+	this.client.close()
+  }
 
   this.neuter = () => { // Client is disconnected, no-op to block sending
     this.send = () => { }
@@ -108,17 +113,22 @@ class Server extends EventEmitter {
   constructor (hostname, port) {
     super()
 	this.server = null
+	this.clients = new Map()
     this.listen = () => {
 		
-		this.server = RaknetServer.bind(hostname + ":" + port).then((server) => {
+		RaknetServer.bind(hostname + ":" + port).then((server) => {
 			this.server = server
 			listen(server, (client) => {
 				var address = client.peeraddr()
 				const new_client = new ServerClient(this, client.peeraddr() , client)
 				this.emit('openConnection', new_client)
+
+				this.clients.set(sha1(address) , client)
+
 				recvcb(client , (buf) => {
 					if (buf == null){
-						this.emit('closeConnection', { address })
+						this.emit('closeConnection', { address , guid : sha1(address) })
+						this.clients.delete(sha1(address))
 						return false
 					} else {
 						this.emit('encapsulated', { buffer: buf, address : client.peeraddr()})
@@ -136,11 +146,13 @@ class Server extends EventEmitter {
   
   setOfflineMessage (message) {
     if (message instanceof Buffer) message = message.toString()
-	if (this.server != null)
-    this.server.setmotd(message)
+	if (this.server) this.server.setmotd(message)
   }
   
-  kick (clientGuid, silent) {
+  kick (clientGuid) {
+	var client = this.clients.get(clientGuid)
+	if (client) client.close()
+	this.clients.delete(clientGuid)
   }
 
 }

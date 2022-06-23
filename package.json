@@ -1,6 +1,6 @@
 {
   "name": "raknet-node",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "author": "b23r0",
   "license": "ISC",
   "napi": {
@@ -40,6 +40,7 @@
   "files": [
     "raknet-node-win.node",
     "raknet-node-linux.node",
+	"raknet-node-osx.node",
     "index.js",
     "constants.js",
     "package.json",

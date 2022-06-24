@@ -11,7 +11,7 @@ Nodejs bindings to rust-raknet native library.
 npm install raknet-node
 ```
 
-Prebuilds are provided for 64-bit Windows 10, Linux. If a prebuild does not work, please create an issue.
+Prebuilds are provided for 64-bit Windows 10, Linux and OSX. If a prebuild does not work, please create an issue.
 
 # Build
 

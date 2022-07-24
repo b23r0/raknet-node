@@ -128,7 +128,15 @@ impl RaknetServer {
                   ));
             }
         };
-        let mut server = RaknetListener::bind(&address).await.unwrap();
+        let mut server = match RaknetListener::bind(&address).await{
+            Ok(p) => p,
+            Err(e) => {
+                return Err(Error::new(
+                    Status::GenericFailure,
+                    format!("{:?}", e),
+                  ));
+            },
+        };
 
         server.listen().await;
 

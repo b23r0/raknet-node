@@ -40,7 +40,7 @@
   "files": [
     "raknet-node-win.node",
     "raknet-node-linux.node",
-	"raknet-node-osx.node",
+    "raknet-node-osx.node",
     "index.js",
     "constants.js",
     "package.json",

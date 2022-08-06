@@ -167,8 +167,9 @@ impl RaknetServer {
     }
 
     #[napi]
-    pub fn close(&mut self) -> Result<()> {
-        Ok(self.server.close().unwrap())
+    pub async fn close(&mut self) -> Result<()> {
+        self.server.close().await.unwrap();
+        Ok(())
     }
 
     #[napi]
